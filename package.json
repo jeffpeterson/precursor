@@ -1,0 +1,22 @@
+{
+  "name": "chain",
+  "version": "0.0.0",
+  "description": "I make chaining fun!",
+  "main": "chain.js",
+  "scripts": {
+    "test": "node_modules/.bin/mocha --watch --recursive --slow 5 --compilers=coffee:coffee-script/register spec/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "github.com/jeffpeterson/chain"
+  },
+  "author": "Jeff Peterson",
+  "license": "MIT",
+  "devDependencies": {
+    "mocha": "^1.20.1",
+    "chai": "^1.9.1",
+    "coffee-script": "^1.7.1",
+    "sinon": "^1.10.2",
+    "sinon-chai": "^2.5.0"
+  }
+}
