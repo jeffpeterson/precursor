@@ -24,7 +24,7 @@ Ajax.getter('go', function() {
     request.onreadystatuschange = function() {
       if (request.readyState != XMLHttpRequest.DONE) return;
 
-      if (request.status == 200) {
+      if (request.status === 200) {
         resolve(request.responseText);
       } else {
         reject(new Error(request.statusText));
@@ -79,7 +79,7 @@ Invoice.getter('isDue', function() {
 
 var invoice = Invoice.set({dueDate: new Date(2020)})
 
-invoice.isDue == false;
+invoice.isDue === false;
 ```
 
 `#flag( name, attributes )`
@@ -96,6 +96,6 @@ Order.flag('delivered', {status: 'delivered'});
 var order1 = Order.shipped;
 var order2 = order1.delivered;
 
-order1.status == 'shipped';
-order2.status == 'delivered';
+order1.status === 'shipped';
+order2.status === 'delivered';
 ```
