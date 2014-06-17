@@ -20,7 +20,7 @@ describe 'Chain', ->
     expect(new @link).to.equal @link
 
   it 'sets properties', ->
-    link = @link.set(a: 1, b: 2).set('c', 3)
+    link = @link.with(a: 1, b: 2).set('c', 3)
 
     expect(link.a).to.equal 1
     expect(link.b).to.equal 2
@@ -57,14 +57,14 @@ describe 'Chain', ->
 
   describe '#tap', ->
     it 'passes a clone as this', ->
-      parent = @link.set(a: 1)
+      parent = @link.with(a: 1)
       parent.tap ->
         expect(this.__proto__).to.equal parent
         expect(this.a).to.equal 1
       null
 
     it 'passes a clone as the first argument', ->
-      parent = @link.set(a: 1)
+      parent = @link.with(a: 1)
       parent.tap (link) ->
         expect(link.__proto__).to.equal parent
         expect(link.a).to.equal 1
@@ -88,7 +88,7 @@ describe 'Chain', ->
       expect(@link.ab.__proto__).to.equal @link
 
   context 'with promise', ->
-    lets 'plink', -> Chain.set(a: 1).resolve(5)
+    lets 'plink', -> Chain.with(a: 1).resolve(5)
 
     describe '#then', ->
       it 'requires a promise', ->

@@ -51,7 +51,7 @@ Chain.def('flag', function(flagName, props) {
   });
 });
 
-Chain.def('set', function(key, value) {
+Chain.def('with', function(key, value) {
   var child = this.clone;
 
   if (typeof key === 'object') {
@@ -65,6 +65,8 @@ Chain.def('set', function(key, value) {
 
   return child;
 });
+
+Chain.def('set', Chain.with);
 
 Chain.def('tap', function(fn) {
   var link = this.clone;
