@@ -14,7 +14,7 @@ Chain.def = function(name, fn) {
   });
 };
 
-Chain.def.call(Chain, 'def', Chain.def);
+Chain.def('def', Chain.def);
 
 Chain.def('invoke', function() {
   return this;
