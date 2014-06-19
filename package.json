@@ -4,8 +4,9 @@
   "description": "I make chaining fun!",
   "main": "chain.js",
   "scripts": {
-    "test": "node_modules/.bin/mocha --watch --recursive --slow 5 --compilers=coffee:coffee-script/register spec/",
-    "coverage": "node_modules/.bin/mocha --recursive --slow 5 --reporter=html-cov --compilers=coffee:coffee-script/register spec/ > coverage.html"
+    "test": "node_modules/.bin/mocha --recursive --slow 5 $FLAGS --compilers=coffee:coffee-script/register spec/",
+    "watch": "FLAGS='--watch' npm test",
+    "coverage": "FLAGS='--reporter=html-cov' npm test > coverage.html"
   },
   "repository": {
     "type": "git",
