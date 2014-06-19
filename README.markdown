@@ -1,5 +1,5 @@
-chain.js
-========
+
+# chain.js [![Build Status](https://travis-ci.org/jeffpeterson/chain-js.svg?branch=master)](https://travis-ci.org/jeffpeterson/chain-js)
 
 `chain.js` is designed to make chaining-based APIs easy.
 
