@@ -37,17 +37,15 @@ Chain.getter('clone', function() {
   return fn;
 });
 
-Chain.def('attr', function(name, fn) {
-  return Object.defineProperty(this, name, {
-    get: fn,
-    enumerable: true,
-    configurable: true
+Chain.def('flag', function(flagName, props) {
+  return this.getter(flagName, function() {
+    return this.with(props);
   });
 });
 
-Chain.def('flag', function(flagName, props) {
-  return this.getter(flagName, function() {
-    return this.set(props);
+Chain.def('lazy', function(name, fn) {
+  return this.getter(name, function() {
+    return this.def(name, fn.call(this))[name];
   });
 });
 
@@ -66,8 +64,6 @@ Chain.def('with', function(key, value) {
   return child;
 });
 
-Chain.def('set', Chain.with);
-
 Chain.def('tap', function(fn) {
   var link = this.clone;
   fn && fn.call(link, link);
@@ -75,32 +71,21 @@ Chain.def('tap', function(fn) {
 });
 
 Chain.def('promise', function(fn) {
-  this._promise = new Promise(fn);
-  return this;
-});
-
-Chain.def('resolve', function(value) {
-  this._promise = Promise.resolve(value);
-  return this
-});
-
-Chain.def('reject', function(error) {
-  this._promise = Promise.reject(error);
-  return this
+  return this.clone.lazy('_promise', function() {
+    return new Promise(fn.bind(this));
+  });
 });
 
 Chain.def('then', function(onResolved, onRejected) {
   if (!this._promise) throw new Error("Nothing has been promised!");
 
-  return this.set('_promise', this._promise.then(onResolved, onRejected));
+  return this.clone.def('_promise', this._promise.then(onResolved, onRejected));
 });
 
 Chain.def('done', Chain.then);
 
 Chain.def('catch', function(onRejected) {
-  if (!this._promise) throw new Error("Nothing has been promised!");
-
-  return this.set('_promise', this._promise.catch(onRejected));
+  return this.then(undefined, onRejected);
 });
 
 })(this);

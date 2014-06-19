@@ -4,7 +4,8 @@
   "description": "I make chaining fun!",
   "main": "chain.js",
   "scripts": {
-    "test": "node_modules/.bin/mocha --watch --recursive --slow 5 --compilers=coffee:coffee-script/register spec/"
+    "test": "node_modules/.bin/mocha --watch --recursive --slow 5 --compilers=coffee:coffee-script/register spec/",
+    "coverage": "node_modules/.bin/mocha --recursive --slow 5 --reporter=html-cov --compilers=coffee:coffee-script/register spec/ > coverage.html"
   },
   "repository": {
     "type": "git",
@@ -17,6 +18,7 @@
     "chai": "^1.9.1",
     "coffee-script": "^1.7.1",
     "sinon": "^1.10.2",
-    "sinon-chai": "^2.5.0"
+    "sinon-chai": "^2.5.0",
+    "blanket": "^1.1.6"
   }
 }

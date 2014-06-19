@@ -11,13 +11,16 @@ Here's an example:
 ```js
 var Ajax = Chain.with({
   dataType: 'txts',
-  method: 'post'
+  method: 'post',
+  url: '/'
 });
+
+Ajax.def('url')
 
 Ajax.flag('get', {method: 'get'});
 Ajax.flag('json', {dataType: 'json'});
 
-Ajax.getter('go', function() {
+Ajax.def('invoke', function() {
   var request = new XMLHttpRequest();
 
   return this.with('request', request).promise(function(resolve, reject) {
@@ -40,26 +43,26 @@ Ajax.getter('go', function() {
   });
 });
 
-var lazyRequest = Ajax.get.json.with({url: '/albums/12345.json'});
-var request = lazyRequest.go;
+var request = Ajax.get.json.with({url: '/albums/12345.json'});
 
-request.then(function(person) {
-  alert(person.name)
+request().then(function(album) {
+  alert(album.name);
 });
+
+request.with({url: '/'})().then(function())
 ```
 
 Methods
 -------
 
-- `Chain.with()`
 - `Chain.def()`
+- `Chain.lazy()`
 - `Chain.getter()`
 - `Chain.flag()`
+- `Chain.with()`
 - `Chain.clone`
 - `Chain.tap()`
 - `Chain.promise()`
-- `Chain.resolve()`
-- `Chain.reject()`
 - `Chain.then()`
 - `Chain.catch()`
 

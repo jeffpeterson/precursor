@@ -1,11 +1,17 @@
 global.Promise = require('es6-promise').Promise
-Chain          = require('../chain.js').Chain
 chai           = require 'chai'
 sinon          = require 'sinon'
 expect         = chai.expect
 
+require('blanket')
+  pattern: (filename) ->
+    !/node_modules/.test(filename);
+
+Chain          = require('../chain.js').Chain
+
 chai.use require('sinon-chai')
 
+log = console.log.bind(console)
 lets = (name, fn) ->
   beforeEach ->
     @[name] = fn()
@@ -19,8 +25,8 @@ describe 'Chain', ->
     expect(new Chain).to.equal Chain
     expect(new @link).to.equal @link
 
-  it 'sets properties', ->
-    link = @link.with(a: 1, b: 2).set('c', 3)
+  it 'clones with properties', ->
+    link = @link.with(a: 1, b: 2).with('c', 3)
 
     expect(link.a).to.equal 1
     expect(link.b).to.equal 2
@@ -80,38 +86,56 @@ describe 'Chain', ->
       null
 
     it 'sets attributes', ->
-
       expect(@link.ab.a).to.equal 1
       expect(@link.ab.b).to.equal 2
 
     it 'creates a clone', ->
       expect(@link.ab.__proto__).to.equal @link
 
+  describe '#lazy', ->
+    it 'only calls passed fn when needed', ->
+      @link.lazy 'five', -> throw 5
+      expect(@link).to.be.ok
+
+    it 'returns the return value of passed fn', ->
+      @link.lazy 'five', -> 5
+      expect(@link.five).to.equal 5
+      expect(@link.five).to.equal 5
+
+    it 'only calls passed fn once', ->
+      count = 0
+      @link.lazy 'me', -> count++; this
+
+      expect(@link.me.me.me).to.equal @link
+      expect(count).to.equal 1
+
+    it 'applies to the link it was first called on', ->
+      @link.lazy 'me', -> this._me = this
+      link = @link.clone.clone
+
+      expect(link.me).to.equal link
+      expect(link.clone.me).to.equal link
+      expect(@link._me).to.equal undefined
+
   context 'with promise', ->
-    lets 'plink', -> Chain.with(a: 1).resolve(5)
+    lets 'plink', -> Chain.with(a: 1).promise (r) -> r(5)
 
     describe '#then', ->
       it 'requires a promise', ->
-        expect(@link.then).to.throw(Error, 'Nothing has been promised')
-        null
+        fn = @link.catch.bind(@link)
+        expect(fn).to.throw(Error, 'Nothing has been promised')
 
       it 'contains a promise', ->
         expect(@plink._promise).to.be.instanceOf(Promise)
 
       it 'gets called with the result', (done) ->
         @plink.then (val) ->
-          try
-            expect(val).to.equal 5
-          catch e
-            return done(e)
+          expect(val).to.equal 5
           done()
 
       it 'clones itself with the new promise', (done) ->
         @plink.then(-> 'new').then (val) ->
-          try
-            expect(val).to.equal 'new'
-          catch e
-            return done(e)
+          expect(val).to.equal 'new'
           done()
 
     describe '#done', ->
@@ -120,31 +144,16 @@ describe 'Chain', ->
 
     describe '#catch', ->
       it 'requires a promise', ->
-        expect(@link.catch).to.throw(Error, 'Nothing has been promised')
-        null
+        fn = @link.catch.bind(@link)
+        expect(fn).to.throw(Error, 'Nothing has been promised')
 
       it 'catches rejected promises', (done) ->
-        @link.reject(new Error).catch (err) ->
-          try
-            expect(err).to.be.instanceOf Error
-          catch e
-            return done(e)
-
+        @link.promise((_, rej) -> rej(5)).catch (val) ->
+          expect(val).to.equal 5
           done()
 
     describe '#promise', ->
       it 'resolves a promise', (done) ->
-        @link.promise((res) -> res(5)).then (val) ->
-          try
-            expect(val).to.equal 5
-          catch e
-            return done(e)
-          done()
-
-      it 'rejects a promise', (done) ->
-        @link.promise((res, rej) -> rej(5)).catch (val) ->
-          try
-            expect(val).to.equal 5
-          catch e
-            return done(e)
+        @plink.then (val) ->
+          expect(val).to.equal 5
           done()
