@@ -18,7 +18,7 @@ lets = (name, fn) ->
     null
 
 describe 'Chain', ->
-  this.timeout(10);
+  this.timeout 10
   lets 'link', -> Chain.clone
 
   it "can be called with new", ->

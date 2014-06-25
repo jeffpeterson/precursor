@@ -15,12 +15,10 @@ var Ajax = Chain.with({
   url: '/'
 });
 
-Ajax.def('url')
-
 Ajax.flag('get', {method: 'get'});
 Ajax.flag('json', {dataType: 'json'});
 
-Ajax.def('invoke', function() {
+Ajax.def(function invoke() {
   var request = new XMLHttpRequest();
 
   return this.with('request', request).promise(function(resolve, reject) {
@@ -52,13 +50,15 @@ request().then(function(album) {
 request.with({url: '/'})().then(function())
 ```
 
-Methods
--------
+### Mutating Methods
 
-- `Chain.def()`
-- `Chain.lazy()`
-- `Chain.getter()`
-- `Chain.flag()`
+- `Chain.def( fn )`
+- `Chain.getter( fn )`
+- `Chain.lazy( fn )`
+- `Chain.flag( name, properties )`
+
+### Cloning Methods
+
 - `Chain.with()`
 - `Chain.clone`
 - `Chain.tap()`
@@ -66,17 +66,18 @@ Methods
 - `Chain.then()`
 - `Chain.catch()`
 
-Values defined with `Chain.def`, `Chain.getter`, or `Chain.flag` are not enumberable: `Object.keys(Chain).length == 0`.
+## `#def( namedFunction )` or `#def( name, value )`
 
-`#getter( name, fn )`
----------------------
+`def` is used to assign non-enumerable values or functions.
+
+## `#getter( namedFunction )` or `#getter( name, fn )`
 
 Getters are meant to be called without parenthesis:
 
 ```js
 var Invoice = Chain.clone;
 
-Invoice.getter('isDue', function() {
+Invoice.getter(function isDue() {
   return this.dueDate < new Date();
 });
 
@@ -85,10 +86,14 @@ var invoice = Invoice.set({dueDate: new Date(2020)})
 invoice.isDue === false;
 ```
 
-`#flag( name, attributes )`
----------------------------
+## `#lazy( name, fn )`
 
-Flags are like getters, but instead of calling a function, they set attributes:
+`lazy` is just like `getter`, but when it's first accessed, it evaluates
+to the return value of the passed function.
+
+## `#flag( name, attributes )`
+
+`flag` is a shortcut for cloning with attributes in getters:
 
 ```js
 var Order = Chain.clone;
@@ -102,3 +107,10 @@ var order2 = order1.delivered;
 order1.status === 'shipped';
 order2.status === 'delivered';
 ```
+
+## `#with( attributes)`
+## `#clone`
+## `#tap( fn )`
+## `#promise( fn )`
+## `#then( onResolved, onRejected )`
+## `#catch( onRejected )`

@@ -1,11 +1,16 @@
 (function(base) {
 
-var Chain = base.Chain = function() {
+function Chain() {
   return Chain.invoke.apply(Chain, arguments);
 };
 
 // Defines a non-enumerable value
-Chain.def = function(name, fn) {
+Chain.def = function def(name, fn) {
+  if (typeof name == 'function') {
+    fn = name;
+    name = fn.name;
+  }
+
   return Object.defineProperty(this, name, {
     value: fn,
     configurable: true,
@@ -14,69 +19,79 @@ Chain.def = function(name, fn) {
   });
 };
 
-Chain.def('def', Chain.def);
+Chain.def(Chain.def);
 
-Chain.def('invoke', function() {
+Chain.def(function invoke() {
   return this;
 });
 
-Chain.def('getter', function(name, fn) {
+Chain.def(function getter(name, fn) {
+  if (typeof name == 'function') {
+    fn = name;
+    name = fn.name;
+  }
+
   return Object.defineProperty(this, name, {
     get: fn,
     configurable: true
   });
 });
 
-Chain.getter('clone', function() {
-  var fn = function() {
-    return fn.invoke.apply(fn, arguments);
+Chain.getter(function clone() {
+  function link() {
+    return link.invoke.apply(link, arguments);
   };
 
-  fn.__proto__ = fn.prototype = this;
+  link.__proto__ = link.prototype = this;
 
-  return fn;
+  return link;
 });
 
-Chain.def('flag', function(flagName, props) {
+Chain.def(function flag(flagName, props) {
   return this.getter(flagName, function() {
     return this.with(props);
   });
 });
 
-Chain.def('lazy', function(name, fn) {
+Chain.def(function lazy(name, fn) {
+  if (typeof name == 'function') {
+    fn = name;
+    name = fn.name;
+  }
+
   return this.getter(name, function() {
     return this.def(name, fn.call(this))[name];
   });
 });
 
 Chain.def('with', function(key, value) {
-  var child = this.clone;
+  var link = this.clone;
 
   if (typeof key === 'object') {
     for (var k in key) {
       if (key.hasOwnProperty(k))
-        child[k] = key[k];
+        link[k] = key[k];
     }
   } else {
-    child[key] = value
+    link[key] = value
   }
 
-  return child;
+  return link;
 });
 
-Chain.def('tap', function(fn) {
+Chain.def(function tap(fn) {
   var link = this.clone;
   fn && fn.call(link, link);
   return this;
 });
 
-Chain.def('promise', function(fn) {
+Chain.def(function promise(fn) {
   return this.clone.lazy('_promise', function() {
     return new Promise(fn.bind(this));
   });
 });
 
-Chain.def('then', function(onResolved, onRejected) {
+Chain.def(function then(onResolved, onRejected) {
   if (!this._promise) throw new Error("Nothing has been promised!");
 
   return this.clone.def('_promise', this._promise.then(onResolved, onRejected));
@@ -87,5 +102,7 @@ Chain.def('done', Chain.then);
 Chain.def('catch', function(onRejected) {
   return this.then(undefined, onRejected);
 });
+
+base.Chain = Chain;
 
 })(this);
