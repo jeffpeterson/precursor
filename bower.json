@@ -1,0 +1,20 @@
+{
+  "name": "chain-js",
+  "version": "0.0.1",
+  "homepage": "https://github.com/jeffpeterson/chain-js",
+  "authors": [
+    "Jeff Peterson <jeff@petersonj.com>"
+  ],
+  "description": "Chain based APIs made easy.",
+  "main": "chain.js",
+  "moduleType": [
+    "globals",
+    "node"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "spec"
+  ]
+}
