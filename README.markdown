@@ -104,7 +104,7 @@ var person = Chain.with({
 
 ## `#flag( name, attributes )`
 
-`flag` is a shortcut for returning a clone with attributes appended:
+`flag` is a shortcut for creating a getter that returns a clone with attributes appended:
 
 ```js
 var Order = Chain.clone;
