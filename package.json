@@ -1,7 +1,7 @@
 {
-  "name": "chain",
-  "version": "0.0.0",
-  "description": "I make chaining fun!",
+  "name": "chain-js",
+  "version": "0.0.1",
+  "description": "Super simple function chaining APIs",
   "main": "chain.js",
   "scripts": {
     "test": "node_modules/.bin/mocha --recursive --slow 5 $FLAGS --compilers=coffee:coffee-script/register spec/",
@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "github.com/jeffpeterson/chain"
+    "url": "http://github.com/jeffpeterson/chain-js"
   },
   "author": "Jeff Peterson",
   "license": "MIT",

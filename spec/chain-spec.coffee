@@ -1,13 +1,13 @@
 global.Promise = require('es6-promise').Promise
-chai           = require 'chai'
-sinon          = require 'sinon'
-expect         = chai.expect
+chai = require 'chai'
+sinon = require 'sinon'
+expect = chai.expect
 
 require('blanket')
   pattern: (filename) ->
     !/node_modules/.test(filename);
 
-Chain          = require('../chain.js').Chain
+Chain = require('../chain.js').Chain
 
 chai.use require('sinon-chai')
 
@@ -76,9 +76,10 @@ describe 'Chain', ->
         expect(link.a).to.equal 1
       null
 
-    it 'returns self', ->
-      expect(@link.tap(-> 1)).to.equal @link
-      expect(@link.tap(->)  ).to.equal @link
+    it 'returns inner clone', ->
+      c1 = null
+      c2 = @link.tap -> c1 = this
+      expect(c1).to.equal(c2)
 
   describe '#flag', ->
     beforeEach ->
@@ -138,6 +139,12 @@ describe 'Chain', ->
           expect(val).to.equal 'new'
           done()
 
+      it 'is called in the context of the current link', (done) ->
+        plink = @plink
+        @plink.then ->
+          expect(this).to.equal plink
+          done()
+
     describe '#done', ->
       it 'equals #then', ->
         expect(@link.done).to.equal @link.then
@@ -150,6 +157,12 @@ describe 'Chain', ->
       it 'catches rejected promises', (done) ->
         @link.promise((_, rej) -> rej(5)).catch (val) ->
           expect(val).to.equal 5
+          done()
+
+      it 'is called in the context of the current link', (done) ->
+        link = @link.promise((_, rej) -> rej(5))
+        link.catch ->
+          expect(this).to.equal link
           done()
 
     describe '#promise', ->

@@ -66,13 +66,14 @@ request.with({url: '/'})().then(function())
 - `Chain.then()`
 - `Chain.catch()`
 
-## `#def( namedFunction )` or `#def( name, value )`
+## `#def( namedFunction )`
 
-`def` is used to assign non-enumerable values or functions.
+`def` is used to assign non-enumerable functions.
+Values can be assigned with `#def( name, value )`.
 
-## `#getter( namedFunction )` or `#getter( name, fn )`
+## `#getter( namedFunction )`
 
-Getters are meant to be called without parenthesis:
+Similar to `def` except getters are called without parenthesis:
 
 ```js
 var Invoice = Chain.clone;
@@ -86,31 +87,56 @@ var invoice = Invoice.set({dueDate: new Date(2020)})
 invoice.isDue === false;
 ```
 
-## `#lazy( name, fn )`
+## `#lazy( namedFunction )`
 
-`lazy` is just like `getter`, but when it's first accessed, it evaluates
-to the return value of the passed function.
+`lazy` is just like `getter`, but it re-assigns itself
+as the return value of the passed function.
+
+## `#with( attributes )`
+Create a clone with the passed attributes appended:
+
+```js
+var person = Chain.with({
+  first_name: "John",
+  last_name: "Doe"
+});
+```
 
 ## `#flag( name, attributes )`
 
-`flag` is a shortcut for cloning with attributes in getters:
+`flag` is a shortcut for returning a clone with attributes appended:
 
 ```js
 var Order = Chain.clone;
 
-Order.flag('shipped', {status: 'shipped'});
-Order.flag('delivered', {status: 'delivered'});
+Order.flag('asShipped', {status: 'shipped'});
+Order.flag('asDelivered', {status: 'delivered'});
 
-var order1 = Order.shipped;
-var order2 = order1.delivered;
+var order1 = Order.asShipped;
+var order2 = order1.asDelivered;
 
 order1.status === 'shipped';
 order2.status === 'delivered';
 ```
 
-## `#with( attributes)`
 ## `#clone`
 ## `#tap( fn )`
+
+`tap` creates a clone, applies `fn` to it, and then returns it.
+The clone is also passed as the first argument.
+
+```js
+Chain.tap(function(clone) {
+  this === clone;
+});
+```
+
 ## `#promise( fn )`
+
+`chain.js` promises require an ES6-compatible `window.Promise` object.
+Alternatively, you can set your own: `Chain.def('Promise', RSVP.Promise)`.
+`chain.js` promises are lazy: `fn` isn't invoked until `#then()`
+has been called on the chain.
+
 ## `#then( onResolved, onRejected )`
 ## `#catch( onRejected )`

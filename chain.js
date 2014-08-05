@@ -6,9 +6,8 @@ function Chain() {
 
 // Defines a non-enumerable value
 Chain.def = function def(name, fn) {
-  if (typeof name == 'function') {
-    fn = name;
-    name = fn.name;
+  if (typeof name === 'function') {
+    fn = name, name = fn.name;
   }
 
   return Object.defineProperty(this, name, {
@@ -21,14 +20,15 @@ Chain.def = function def(name, fn) {
 
 Chain.def(Chain.def);
 
+Chain.def('Promise', Promise);
+
 Chain.def(function invoke() {
   return this;
 });
 
 Chain.def(function getter(name, fn) {
-  if (typeof name == 'function') {
-    fn = name;
-    name = fn.name;
+  if (typeof name === 'function') {
+    fn = name, name = fn.name;
   }
 
   return Object.defineProperty(this, name, {
@@ -54,9 +54,8 @@ Chain.def(function flag(flagName, props) {
 });
 
 Chain.def(function lazy(name, fn) {
-  if (typeof name == 'function') {
-    fn = name;
-    name = fn.name;
+  if (typeof name === 'function') {
+    fn = name, name = fn.name;
   }
 
   return this.getter(name, function() {
@@ -65,34 +64,34 @@ Chain.def(function lazy(name, fn) {
 });
 
 Chain.def('with', function(key, value) {
-  var link = this.clone;
-
-  if (typeof key === 'object') {
-    for (var k in key) {
-      if (key.hasOwnProperty(k))
-        link[k] = key[k];
+  return this.tap(function() {
+    if (typeof key === 'object') {
+      for (var k in key) {
+        this[k] = key[k];
+      }
+    } else {
+      this[key] = value
     }
-  } else {
-    link[key] = value
-  }
-
-  return link;
+  });
 });
 
 Chain.def(function tap(fn) {
   var link = this.clone;
   fn && fn.call(link, link);
-  return this;
+  return link;
 });
 
 Chain.def(function promise(fn) {
   return this.clone.lazy('_promise', function() {
-    return new Promise(fn.bind(this));
+    return new this.Promise(fn.bind(this));
   });
 });
 
 Chain.def(function then(onResolved, onRejected) {
-  if (!this._promise) throw new Error("Nothing has been promised!");
+  if (!this._promise) throw new Error('Nothing has been promised!');
+
+  onResolved = onResolved && onResolved.bind(this);
+  onRejected = onRejected && onRejected.bind(this);
 
   return this.clone.def('_promise', this._promise.then(onResolved, onRejected));
 });
