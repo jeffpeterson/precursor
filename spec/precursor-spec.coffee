@@ -1,3 +1,4 @@
+global.Promise = require('es6-promise').Promise;
 chai = require 'chai'
 sinon = require 'sinon'
 expect = chai.expect

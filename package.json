@@ -4,7 +4,7 @@
   "description": "Cloning made easy.",
   "main": "precursor.js",
   "scripts": {
-    "test": "node --harmony node_modules/.bin/mocha --recursive --slow 5 $FLAGS --compilers=coffee:coffee-script/register spec/",
+    "test": "node_modules/.bin/mocha --recursive --slow 5 $FLAGS --compilers=coffee:coffee-script/register spec/",
     "watch": "FLAGS='--watch' npm test",
     "coverage": "FLAGS='--reporter=html-cov' npm test > coverage.html"
   },
