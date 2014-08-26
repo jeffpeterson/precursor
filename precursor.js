@@ -20,8 +20,6 @@ Precursor.def = function def(name, fn) {
 
 Precursor.def(Precursor.def);
 
-Precursor.def('Promise', Promise);
-
 Precursor.def(function invoke() {
   return this;
 });
@@ -79,6 +77,10 @@ Precursor.def(function tap(fn) {
   var pre = this.clone;
   fn && fn.call(pre, pre);
   return pre;
+});
+
+Precursor.lazy('Promise', function() {
+  return Promise;
 });
 
 Precursor.def(function promise(fn) {
