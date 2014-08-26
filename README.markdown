@@ -1,7 +1,7 @@
 
-# chain.js [![Build Status](https://travis-ci.org/jeffpeterson/chain-js.svg?branch=master)](https://travis-ci.org/jeffpeterson/chain-js)
+# `precursor` [![Build Status](https://travis-ci.org/jeffpeterson/precursor.svg?branch=master)](https://travis-ci.org/jeffpeterson/precursor)
 
-`chain.js` is designed to make chaining-based APIs easy.
+`precursor` is designed to make cloning easy.
 
 Usage
 =====
@@ -9,7 +9,7 @@ Usage
 Here's an example:
 
 ```js
-var Ajax = Chain.with({
+var Ajax = Precursor.with({
   dataType: 'txts',
   method: 'post',
   url: '/'
@@ -52,19 +52,19 @@ request.with({url: '/'})().then(function())
 
 ### Mutating Methods
 
-- `Chain.def( fn )`
-- `Chain.getter( fn )`
-- `Chain.lazy( fn )`
-- `Chain.flag( name, properties )`
+- `Precursor.def( fn )`
+- `Precursor.getter( fn )`
+- `Precursor.lazy( fn )`
+- `Precursor.flag( name, properties )`
 
 ### Cloning Methods
 
-- `Chain.with()`
-- `Chain.clone`
-- `Chain.tap()`
-- `Chain.promise()`
-- `Chain.then()`
-- `Chain.catch()`
+- `Precursor.with()`
+- `Precursor.clone`
+- `Precursor.tap()`
+- `Precursor.promise()`
+- `Precursor.then()`
+- `Precursor.catch()`
 
 ## `#def( namedFunction )`
 
@@ -76,7 +76,7 @@ Values can be assigned with `#def( name, value )`.
 Similar to `def` except getters are called without parenthesis:
 
 ```js
-var Invoice = Chain.clone;
+var Invoice = Precursor.clone;
 
 Invoice.getter(function isDue() {
   return this.dueDate < new Date();
@@ -96,7 +96,7 @@ as the return value of the passed function.
 Create a clone with the passed attributes appended:
 
 ```js
-var person = Chain.with({
+var person = Precursor.with({
   first_name: "John",
   last_name: "Doe"
 });
@@ -107,7 +107,7 @@ var person = Chain.with({
 `flag` is a shortcut for creating a getter that returns a clone with attributes appended:
 
 ```js
-var Order = Chain.clone;
+var Order = Precursor.clone;
 
 Order.flag('asShipped', {status: 'shipped'});
 Order.flag('asDelivered', {status: 'delivered'});
@@ -126,17 +126,17 @@ order2.status === 'delivered';
 The clone is also passed as the first argument.
 
 ```js
-Chain.tap(function(clone) {
+Precursor.tap(function(clone) {
   this === clone;
 });
 ```
 
 ## `#promise( fn )`
 
-`chain.js` promises require an ES6-compatible `window.Promise` object.
-Alternatively, you can set your own: `Chain.def('Promise', RSVP.Promise)`.
-`chain.js` promises are lazy: `fn` isn't invoked until `#then()`
-has been called on the chain.
+`precursor` promises require an ES6-compatible `window.Promise` object.
+Alternatively, you can set your own: `Precursor.def('Promise', RSVP.Promise)`.
+`precursor` promises are lazy: `fn` isn't invoked until `#then()`
+has been called on a clone.
 
 ## `#then( onResolved, onRejected )`
 ## `#catch( onRejected )`

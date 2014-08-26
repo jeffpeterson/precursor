@@ -1,11 +1,11 @@
 (function(base) {
 
-function Chain() {
-  return Chain.invoke.apply(Chain, arguments);
+function Precursor() {
+  return Precursor.invoke.apply(Precursor, arguments);
 };
 
 // Defines a non-enumerable value
-Chain.def = function def(name, fn) {
+Precursor.def = function def(name, fn) {
   if (typeof name === 'function') {
     fn = name, name = fn.name;
   }
@@ -18,15 +18,15 @@ Chain.def = function def(name, fn) {
   });
 };
 
-Chain.def(Chain.def);
+Precursor.def(Precursor.def);
 
-Chain.def('Promise', Promise);
+Precursor.def('Promise', Promise);
 
-Chain.def(function invoke() {
+Precursor.def(function invoke() {
   return this;
 });
 
-Chain.def(function getter(name, fn) {
+Precursor.def(function getter(name, fn) {
   if (typeof name === 'function') {
     fn = name, name = fn.name;
   }
@@ -37,23 +37,23 @@ Chain.def(function getter(name, fn) {
   });
 });
 
-Chain.getter(function clone() {
-  function link() {
-    return link.invoke.apply(link, arguments);
+Precursor.getter(function clone() {
+  function pre() {
+    return pre.invoke.apply(pre, arguments);
   };
 
-  link.__proto__ = link.prototype = this;
+  pre.__proto__ = pre.prototype = this;
 
-  return link;
+  return pre;
 });
 
-Chain.def(function flag(flagName, props) {
+Precursor.def(function flag(flagName, props) {
   return this.getter(flagName, function() {
     return this.with(props);
   });
 });
 
-Chain.def(function lazy(name, fn) {
+Precursor.def(function lazy(name, fn) {
   if (typeof name === 'function') {
     fn = name, name = fn.name;
   }
@@ -63,7 +63,7 @@ Chain.def(function lazy(name, fn) {
   });
 });
 
-Chain.def('with', function(key, value) {
+Precursor.def('with', function(key, value) {
   return this.tap(function() {
     if (typeof key === 'object') {
       for (var k in key) {
@@ -75,19 +75,19 @@ Chain.def('with', function(key, value) {
   });
 });
 
-Chain.def(function tap(fn) {
-  var link = this.clone;
-  fn && fn.call(link, link);
-  return link;
+Precursor.def(function tap(fn) {
+  var pre = this.clone;
+  fn && fn.call(pre, pre);
+  return pre;
 });
 
-Chain.def(function promise(fn) {
+Precursor.def(function promise(fn) {
   return this.clone.lazy('_promise', function() {
     return new this.Promise(fn.bind(this));
   });
 });
 
-Chain.def(function then(onResolved, onRejected) {
+Precursor.def(function then(onResolved, onRejected) {
   if (!this._promise) throw new Error('Nothing has been promised!');
 
   onResolved = onResolved && onResolved.bind(this);
@@ -96,12 +96,12 @@ Chain.def(function then(onResolved, onRejected) {
   return this.clone.def('_promise', this._promise.then(onResolved, onRejected));
 });
 
-Chain.def('done', Chain.then);
+Precursor.def('done', Precursor.then);
 
-Chain.def('catch', function(onRejected) {
+Precursor.def('catch', function(onRejected) {
   return this.then(undefined, onRejected);
 });
 
-base.Chain = Chain;
+base.Precursor = Precursor;
 
 })(this);

@@ -7,7 +7,7 @@ require('blanket')
   pattern: (filename) ->
     !/node_modules/.test(filename);
 
-Chain = require('../chain.js').Chain
+Precursor = require('../precursor.js').Precursor
 
 chai.use require('sinon-chai')
 
@@ -17,12 +17,12 @@ lets = (name, fn) ->
     @[name] = fn()
     null
 
-describe 'Chain', ->
+describe 'Precursor', ->
   this.timeout 10
-  lets 'link', -> Chain.clone
+  lets 'link', -> Precursor.clone
 
   it "can be called with new", ->
-    expect(new Chain).to.equal Chain
+    expect(new Precursor).to.equal Precursor
     expect(new @link).to.equal @link
 
   it 'clones with properties', ->
@@ -37,7 +37,7 @@ describe 'Chain', ->
     expect(@link.c).to.equal undefined
 
   it "can be called with no consequence", ->
-    expect(Chain).to.equal Chain()
+    expect(Precursor).to.equal Precursor()
 
   it 'clones itself', ->
     ln = @link.clone.clone().clone.clone
@@ -45,7 +45,7 @@ describe 'Chain', ->
     expect(ln.clone.prototype).to.equal ln
 
   it "creates callable clones", ->
-    link = Chain.clone.clone
+    link = Precursor.clone.clone
     expect(link()).to.equal link
 
   it 'creates a copy', ->
@@ -56,7 +56,7 @@ describe 'Chain', ->
     expect(link.context).to.equal link
 
   it 'has non-enumerable methods', ->
-    expect(Object.keys(Chain).length).to.equal(0)
+    expect(Object.keys(Precursor).length).to.equal(0)
     for i in @link
       expect(true).to.equal false
 
@@ -119,7 +119,7 @@ describe 'Chain', ->
       expect(@link._me).to.equal undefined
 
   context 'with promise', ->
-    lets 'plink', -> Chain.with(a: 1).promise (r) -> r(5)
+    lets 'plink', -> Precursor.with(a: 1).promise (r) -> r(5)
 
     describe '#then', ->
       it 'requires a promise', ->

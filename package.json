@@ -1,8 +1,8 @@
 {
-  "name": "chain-js",
-  "version": "0.0.1",
-  "description": "Super simple function chaining APIs",
-  "main": "chain.js",
+  "name": "precursor",
+  "version": "0.0.2",
+  "description": "Cloning made easy.",
+  "main": "precursor.js",
   "scripts": {
     "test": "node_modules/.bin/mocha --recursive --slow 5 $FLAGS --compilers=coffee:coffee-script/register spec/",
     "watch": "FLAGS='--watch' npm test",
@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "http://github.com/jeffpeterson/chain-js"
+    "url": "http://github.com/jeffpeterson/precursor"
   },
   "author": "Jeff Peterson",
   "license": "MIT",
