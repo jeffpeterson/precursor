@@ -1,7 +1,7 @@
 
-# `precursor` [![Build Status](https://travis-ci.org/jeffpeterson/precursor.svg?branch=master)](https://travis-ci.org/jeffpeterson/precursor)
+# `Precursor` [![Build Status](https://travis-ci.org/jeffpeterson/precursor.svg?branch=master)](https://travis-ci.org/jeffpeterson/precursor)
 
-`precursor` is designed to make cloning easy.
+`Precursor` is designed to make cloning easy.
 
 Usage
 =====
@@ -133,9 +133,9 @@ Precursor.tap(function(clone) {
 
 ## `#promise( fn )`
 
-`precursor` promises require an ES6-compatible `window.Promise` object.
+`Precursor` promises require an ES6-compatible `window.Promise` object.
 Alternatively, you can set your own: `Precursor.def('Promise', RSVP.Promise)`.
-`precursor` promises are lazy: `fn` isn't invoked until `#then()`
+`Precursor` promises are lazy: `fn` isn't invoked until `#then()`
 has been called on a clone.
 
 ## `#then( onResolved, onRejected )`
