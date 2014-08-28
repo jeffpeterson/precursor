@@ -43,6 +43,7 @@ describe 'Precursor', ->
     ln = @link.clone.clone().clone.clone
     expect(ln.clone.__proto__).to.equal ln
     expect(ln.clone.prototype).to.equal ln
+    expect(ln.clone.precursor).to.equal ln
 
   it "creates callable clones", ->
     link = Precursor.clone.clone
@@ -59,7 +60,6 @@ describe 'Precursor', ->
     expect(Object.keys(Precursor).length).to.equal(0)
     for i in @link
       expect(true).to.equal false
-
 
   describe '#tap', ->
     it 'passes a clone as this', ->

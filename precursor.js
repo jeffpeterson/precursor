@@ -38,9 +38,9 @@ Precursor.def(function getter(name, fn) {
 Precursor.getter(function clone() {
   function pre() {
     return pre.invoke.apply(pre, arguments);
-  };
+  }
 
-  pre.__proto__ = pre.prototype = this;
+  pre.__proto__ = pre.prototype = pre.precursor = this;
 
   return pre;
 });
@@ -68,15 +68,15 @@ Precursor.def('with', function(key, value) {
         this[k] = key[k];
       }
     } else {
-      this[key] = value
+      this[key] = value;
     }
   });
 });
 
 Precursor.def(function tap(fn) {
-  var pre = this.clone;
-  fn && fn.call(pre, pre);
-  return pre;
+  var clone = this.clone;
+  fn && fn.call(clone, clone);
+  return clone;
 });
 
 Precursor.lazy('Promise', function() {
