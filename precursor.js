@@ -30,7 +30,9 @@ Precursor.def(function getter(name, fn) {
   }
 
   return Object.defineProperty(this, name, {
-    get: fn,
+    get: !fn.length ? fn : function get() {
+      return fn.call(this, this);
+    },
     configurable: true
   });
 });
@@ -57,7 +59,7 @@ Precursor.def(function lazy(name, fn) {
   }
 
   return this.getter(name, function() {
-    return this.def(name, fn.call(this))[name];
+    return this.def(name, fn.call(this, this))[name];
   });
 });
 

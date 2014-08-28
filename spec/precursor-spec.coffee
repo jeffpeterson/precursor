@@ -93,6 +93,12 @@ describe 'Precursor', ->
     it 'creates a clone', ->
       expect(@link.ab.__proto__).to.equal @link
 
+  describe '#getter', ->
+    it 'passes self as the first argument', ->
+      @link.getter 'test', (clone) ->
+        expect(clone).to.equal this
+      @link.test
+
   describe '#lazy', ->
     it 'only calls passed fn when needed', ->
       @link.lazy 'five', -> throw 5
@@ -117,6 +123,11 @@ describe 'Precursor', ->
       expect(link.me).to.equal link
       expect(link.clone.me).to.equal link
       expect(@link._me).to.equal undefined
+
+    it 'passes self as the first argument', ->
+      @link.lazy 'test', (clone) ->
+        expect(clone).to.equal this
+      @link.test
 
   context 'with promise', ->
     lets 'plink', -> Precursor.with(a: 1).promise (r) -> r(5)
