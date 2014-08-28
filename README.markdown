@@ -1,5 +1,5 @@
 
-# `Precursor` [![Build Status](https://travis-ci.org/jeffpeterson/precursor.svg?branch=master)](https://travis-ci.org/jeffpeterson/precursor)
+# Precursor [![Build Status](https://travis-ci.org/jeffpeterson/precursor.svg?branch=master)](https://travis-ci.org/jeffpeterson/precursor)
 
 `Precursor` is designed to make cloning easy.
 
@@ -10,7 +10,7 @@ Here's an example:
 
 ```js
 var Ajax = Precursor.with({
-  dataType: 'txts',
+  dataType: 'text',
   method: 'post',
   url: '/'
 });
@@ -21,7 +21,7 @@ Ajax.flag('json', {dataType: 'json'});
 Ajax.def(function invoke() {
   var request = new XMLHttpRequest();
 
-  return this.with('request', request).promise(function(resolve, reject) {
+  return this.with({request: request}).promise(function(resolve, reject) {
     request.onreadystatuschange = function() {
       if (request.readyState != XMLHttpRequest.DONE) return;
 
@@ -59,8 +59,8 @@ request.with({url: '/'})().then(function())
 
 ### Cloning Methods
 
-- `Precursor.with()`
 - `Precursor.clone`
+- `Precursor.with()`
 - `Precursor.tap()`
 - `Precursor.promise()`
 - `Precursor.then()`
@@ -104,7 +104,7 @@ var person = Precursor.with({
 
 ## `#flag( name, attributes )`
 
-`flag` is a shortcut for creating a getter that returns a clone with attributes appended:
+`flag` is a shortcut for `with(attributes)`.
 
 ```js
 var Order = Precursor.clone;
@@ -120,6 +120,9 @@ order2.status === 'delivered';
 ```
 
 ## `#clone`
+
+Returns a copy of `this`.
+
 ## `#tap( fn )`
 
 `tap` creates a clone, applies `fn` to it, and then returns it.
@@ -140,3 +143,21 @@ has been called on a clone.
 
 ## `#then( onResolved, onRejected )`
 ## `#catch( onRejected )`
+
+Using `catch` is preferred over passing a second argument to `then`.
+
+## `#invoke()`
+
+Perhaps the neatest feature of `Precursor`.
+By default, each `Precursor` clone is actually a function.
+We can define what that function does by defining `invoke`:
+
+```js
+var Five = Precursor.clone;
+
+Five.def(function invoke() {
+  return 5;
+});
+
+Five() === 5;
+```
