@@ -58,8 +58,10 @@ describe 'Precursor', ->
 
   it 'has non-enumerable methods', ->
     expect(Object.keys(Precursor).length).to.equal(0)
+    expect(Object.keys(Precursor.clone).length).to.equal(0)
     for i in @link
       expect(true).to.equal false
+    return
 
   describe '#tap', ->
     it 'passes a clone as this', ->
@@ -99,6 +101,12 @@ describe 'Precursor', ->
         expect(clone).to.equal this
       @link.test
 
+    it 'allows overriding of attr on clones', ->
+      @link.getter 'test', -> 'getter'
+      clone = @link.with({test: 'with'})
+      expect(clone.test).to.equal 'with'
+      expect(Object.keys(clone)).to.include 'test'
+
   describe '#lazy', ->
     it 'only calls passed fn when needed', ->
       @link.lazy 'five', -> throw 5
@@ -128,6 +136,11 @@ describe 'Precursor', ->
       @link.lazy 'test', (clone) ->
         expect(clone).to.equal this
       @link.test
+
+    it 'allows overriding of lazy attr on clones', ->
+      @link.lazy 'test', -> 'lazy'
+      clone = @link.with({test: 'with'})
+      expect(clone.test).to.equal 'with'
 
   context 'with promise', ->
     lets 'plink', -> Precursor.with(a: 1).promise (r) -> r(5)

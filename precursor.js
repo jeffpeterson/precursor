@@ -33,6 +33,15 @@ Precursor.def(function getter(name, fn) {
     get: !fn.length ? fn : function get() {
       return fn.call(this, this);
     },
+    set: function(value) {
+      Object.defineProperty(this, name, {
+        value: value,
+        writable: true,
+        enumerable: true,
+        configurable: true
+      });
+      return this;
+    },
     configurable: true
   });
 });
@@ -42,7 +51,8 @@ Precursor.getter(function clone() {
     return pre.invoke.apply(pre, arguments);
   }
 
-  pre.__proto__ = pre.prototype = pre.precursor = this;
+  pre.__proto__ = pre.prototype = this;
+  pre.def('precursor', this);
 
   return pre;
 });
